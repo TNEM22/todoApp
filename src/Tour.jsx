@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { driver } from "driver.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -75,6 +75,7 @@ const Tour = () => {
   ];
 
   const navigate = useNavigate();
+  const driverRef = useRef(null);
 
   useEffect(() => {
     if (!localStorage.getItem("token") || !localStorage.getItem("name")) {
@@ -95,6 +96,14 @@ const Tour = () => {
     });
 
     driverObj.drive();
+    driverRef.current = driverObj;
+
+    return () => {
+      if (driverRef.current) {
+        driverRef.current.destroy();
+        driverRef.current = null;
+      }
+    };
   }, []);
 };
 
